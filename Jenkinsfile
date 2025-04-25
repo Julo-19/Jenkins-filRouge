@@ -1,9 +1,13 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'python:3.10' // image officielle Python
+        }
+    }
 
     environment {
-        DOCKER_HUB_CREDENTIALS = 'my-id' // ID Jenkins Credentials
-        DOCKERHUB_USER = 'julo1997'       // ton nom d’utilisateur Docker Hub
+        DOCKER_HUB_CREDENTIALS = 'my-id'
+        DOCKERHUB_USER = 'julo1997'
     }
 
     stages {
@@ -19,7 +23,7 @@ pipeline {
                 dir('Backend/odc') {
                     echo "⚙️ Création de l'environnement virtuel et test de Django"
                     sh '''
-                        python3 -m venv venv
+                        python -m venv venv
                         . venv/bin/activate
                         pip install --upgrade pip
                         pip install -r requirements.txt
