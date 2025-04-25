@@ -12,4 +12,19 @@ pipeline {
             }
         }  
     }
+
+    stage('Build & Test Backend (Django)') {
+        steps {
+            dir('Backend/odc') {
+                echo "⚙️ Création de l'environnement virtuel et test de Django"
+                sh '''
+                    python3 -m venv venv
+                        . venv/bin/activate
+                        pip install --upgrade pip
+                        pip install -r requirements.txt
+                        python manage.py test
+                    '''
+                }
+            }
+        }
 }
