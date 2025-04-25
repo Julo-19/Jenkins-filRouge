@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS = 'jnk-creds' // ID Jenkins Credentials
-        DOCKERHUB_USER = 'pauljosephd'       // ton nom d’utilisateur Docker Hub
+        DOCKER_HUB_CREDENTIALS = 'my-id' // ID Jenkins Credentials
+        DOCKERHUB_USER = 'julo1997'       // ton nom d’utilisateur Docker Hub
     }
 
     stages {
