@@ -11,10 +11,11 @@ pipeline {
     stages {
         stage('Cloner le dépôt') {
             steps {
-                git branch: 'votre branche principale',
+                git branch: 'master', // remplacez 'main' si votre branche s'appelle autrement
                     url: 'https://github.com/Julo-19/Jenkins-filRouge'
             }
         }
+
         stage('Build des images') {
             steps {
                 sh 'docker build -t $BACKEND_IMAGE:latest ./Backend/odc'
@@ -25,7 +26,7 @@ pipeline {
 
         stage('Push des images sur Docker Hub') {
             steps {
-                withDockerRegistry([my-id: 'votre credential dockerhub', url: '']) {
+                withDockerRegistry([credentialsId: 'votre_credential_dockerhub', url: 'https://index.docker.io/v1/']) {
                     sh 'docker push $BACKEND_IMAGE:latest'
                     sh 'docker push $FRONTEND_IMAGE:latest'
                     sh 'docker push $MIGRATE_IMAGE:latest'
@@ -46,11 +47,12 @@ pipeline {
 
     post {
         success {
-            mail to: 'votre email@gmail.com',
-                 subject: "reussite",
-                 body: "L'application a été déployée."
+            mail to: 'votre.email@gmail.com',
+                 subject: "Succès du déploiement",
+                 body: "L'application a été déployée avec succès."
         }
         failure {
-         }
+            echo 'Le déploiement a échoué.'
+        }
     }
 }
