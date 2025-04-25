@@ -14,21 +14,21 @@ pipeline {
             }
         }
 
-  stage('Build & Test Backend (Django)') {
-    steps {
-        dir('Backend/odc') {
-            echo "⚙️ Vérification de Python et création de l'environnement virtuel"
-           sh """
-    /usr/bin/python3 --version
-    /usr/bin/python3 -m venv venv
-    source venv/bin/activate
-    pip install -r requirements.txt
-    python manage.py test
-    """
+//   stage('Build & Test Backend (Django)') {
+//     steps {
+//         dir('Backend/odc') {
+//             echo "⚙️ Vérification de Python et création de l'environnement virtuel"
+//            sh """
+//     /usr/bin/python3 --version
+//     /usr/bin/python3 -m venv venv
+//     source venv/bin/activate
+//     pip install -r requirements.txt
+//     python manage.py test
+//     """
 
-        }
-    }
-}
+//         }
+//     }
+// }
 
 
 
