@@ -19,6 +19,7 @@ pipeline {
                 dir('Backend/odc') {
                     echo "⚙️ Création de l'environnement virtuel et test de Django"
                     sh '''
+                        sh 'apt-get update && apt-get install -y python3 python3-venv'
                         python3 -m venv venv
                         . venv/bin/activate
                         pip install --upgrade pip
