@@ -14,21 +14,22 @@ pipeline {
             }
         }
 
-        stage('Build & Test Backend (Django)') {
-            steps {
-                dir('Backend/odc') {
-                    echo "⚙️ Création de l'environnement virtuel et test de Django"
-                    sh '''
-                        sh 'apt-get update && apt-get install -y python3 python3-venv'
-                        python3 -m venv venv
-                        . venv/bin/activate
-                        pip install --upgrade pip
-                        pip install -r requirements.txt
-                        python manage.py test
-                    '''
-                }
+    stage('Build & Test Backend (Django)') {
+        agent {
+            docker {
+                image 'python:3.10'
             }
         }
+        steps {
+            sh '''
+                python -m venv venv
+                . venv/bin/activate
+                pip install -r requirements.txt
+                ython manage.py test
+        '''
+    }
+}
+
 
         stage('Build & Test Frontend (React)') {
             steps {
