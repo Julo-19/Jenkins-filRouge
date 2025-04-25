@@ -15,18 +15,15 @@ pipeline {
         }
 
     stage('Build & Test Backend (Django)') {
-        agent {
-            docker {
-                image 'python:3.10'
-            }
-        }
-        steps {
+    steps {
+        dir('Backend/odc') {
             sh '''
-                python -m venv venv
+                python3 -m venv venv
                 . venv/bin/activate
                 pip install -r requirements.txt
-                ython manage.py test
-        '''
+                python manage.py test
+            '''
+        }
     }
 }
 
