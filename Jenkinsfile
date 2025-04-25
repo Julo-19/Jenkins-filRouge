@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_HUB_CREDENTIALS = 'my-id' // ID Jenkins Credentials
-        DOCKERHUB_USER = 'julo1997'       // ton nom d’utilisateur Docker Hub
+        DOCKERHUB_USER = 'julo1997'
     }
 
     stages {
@@ -14,19 +14,23 @@ pipeline {
             }
         }
 
-    stage('Build & Test Backend (Django)') {
-    steps {
-        dir('Backend/odc') {
-            sh '''
-                python3 -m venv venv
-                . venv/bin/activate
-                pip install -r requirements.txt
-                python manage.py test
-            '''
+        stage('Build & Test Backend (Django)') {
+            agent {
+                docker {
+                    image 'python:3.10'
+                }
+            }
+            steps {
+                dir('Backend/odc') {
+                    sh '''
+                        python -m venv venv
+                        . venv/bin/activate
+                        pip install --no-cache-dir -r requirements.txt
+                        python manage.py test
+                    '''
+                }
+            }
         }
-    }
-}
-
 
         stage('Build & Test Frontend (React)') {
             steps {
@@ -36,7 +40,7 @@ pipeline {
                         export PATH=$PATH:/var/lib/jenkins/.nvm/versions/node/v22.15.0/bin/
                         npm install
                         npm run build
-                       # npm test -- --watchAll=false
+                        # npm test -- --watchAll=false
                     '''
                 }
             }
@@ -66,15 +70,13 @@ pipeline {
                 }
             }
         }
-        stage('run'){
-            steps{
-                dir('cd ..'){
+
+        stage('run') {
+            steps {
                 sh '''
-                docker-compose build
-                docker-compose up
-                #docker run --rm -d -p 8081:8081 ${DOCKERHUB_USER}/mon-frontend:latest
+                    docker-compose build
+                    docker-compose up -d
                 '''
-                }
             }
         }
     }
@@ -82,13 +84,13 @@ pipeline {
     post {
         success {
             mail to: 'juloballer19@gmail.com',
-                 subject:"deploiement reussi",
-                  body: "l'application a ete deploye avec succes"
+                 subject:"🚀 Déploiement réussi",
+                 body: "✅ L'application a été déployée avec succès !"
         }
         failure {
             mail to: 'juloballer19@gmail.com',
-                 subject:"echec du deploiement",
-                  body: "veuillez corriger vos erreurs"
+                 subject:"❌ Échec du déploiement",
+                 body: "⚠️ Le pipeline a échoué. Merci de corriger les erreurs."
         }
     }
 }
