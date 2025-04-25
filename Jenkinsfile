@@ -11,25 +11,24 @@ pipeline {
     stages {
         stage('Cloner le dépôt') {
             steps {
-                git branch: 'master', // remplacez 'main' si votre branche s'appelle autrement
-                    url: 'https://github.com/Julo-19/Jenkins-filRouge'
+                git branch: 'master', url: 'https://github.com/Julo-19/Jenkins-filRouge'
             }
         }
 
         stage('Build des images') {
             steps {
-                sh 'docker build -t $BACKEND_IMAGE:latest ./Backend/odc'
-                sh 'docker build -t $FRONTEND_IMAGE:latest ./Frontend'
-                sh 'docker build -t $MIGRATE_IMAGE:latest ./Backend/odc'
+                sh "docker build -t ${BACKEND_IMAGE}:latest ./Backend/odc"
+                sh "docker build -t ${FRONTEND_IMAGE}:latest ./Frontend"
+                sh "docker build -t ${MIGRATE_IMAGE}:latest ./Backend/odc"
             }
         }
 
         stage('Push des images sur Docker Hub') {
             steps {
                 withDockerRegistry([credentialsId: 'my-id', url: 'https://index.docker.io/v1/']) {
-                    sh 'docker push $BACKEND_IMAGE:latest'
-                    sh 'docker push $FRONTEND_IMAGE:latest'
-                    sh 'docker push $MIGRATE_IMAGE:latest'
+                    sh "docker push ${BACKEND_IMAGE}:latest"
+                    sh "docker push ${FRONTEND_IMAGE}:latest"
+                    sh "docker push ${MIGRATE_IMAGE}:latest"
                 }
             }
         }
