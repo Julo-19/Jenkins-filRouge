@@ -14,11 +14,13 @@ pipeline {
             }
         }
 
-   stage('Build & Test Backend (Django)') {
+  stage('Build & Test Backend (Django)') {
     steps {
         dir('Backend/odc') {
-            echo "⚙️ Création de l'environnement virtuel et test de Django"
+            echo "⚙️ Vérification de Python et création de l'environnement virtuel"
             sh '''
+                which python3
+                /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 --version
                 /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 -m venv venv
                 source venv/bin/activate
                 pip install --upgrade pip
@@ -28,6 +30,7 @@ pipeline {
         }
     }
 }
+
 
 
         stage('Build & Test Frontend (React)') {
