@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS = 'my-id' // ID Jenkins Credentials
-        DOCKERHUB_USER = 'julo1997'
+        DOCKER_HUB_CREDENTIALS = 'jnk-creds' // ID Jenkins Credentials
+        DOCKERHUB_USER = 'pauljosephd'       // ton nom d’utilisateur Docker Hub
     }
 
     stages {
@@ -14,23 +14,30 @@ pipeline {
             }
         }
 
-        stage('Build & Test Backend (Django)') {
-            agent {
-                docker {
-                    image 'python:3.10'
-                }
-            }
-            steps {
-                dir('Backend/odc') {
-                    sh '''
-                        python -m venv venv
-                        . venv/bin/activate
-                        pip install --no-cache-dir -r requirements.txt
-                        python manage.py test
-                    '''
-                }
-            }
+     stage('Build & Test Backend (Django)') {
+    steps {
+        dir('Backend/odc') {
+            echo "⚙️ Création de l'environnement virtuel et test de Django"
+            sh '''
+                # Créer l'environnement virtuel
+                python3 -m venv venv
+                
+                # Activer l'environnement virtuel pour la session
+                source venv/bin/activate
+                
+                # Mettre à jour pip
+                pip install --upgrade pip
+                
+                # Installer les dépendances
+                pip install -r requirements.txt
+                
+                # Exécuter les tests Django
+                python manage.py test
+            '''
         }
+    }
+}
+
 
         stage('Build & Test Frontend (React)') {
             steps {
@@ -40,7 +47,7 @@ pipeline {
                         export PATH=$PATH:/var/lib/jenkins/.nvm/versions/node/v22.15.0/bin/
                         npm install
                         npm run build
-                        # npm test -- --watchAll=false
+                       # npm test -- --watchAll=false
                     '''
                 }
             }
@@ -70,27 +77,29 @@ pipeline {
                 }
             }
         }
-
-        stage('run') {
-            steps {
+        stage('run'){
+            steps{
+                dir('cd ..'){
                 sh '''
-                    docker-compose build
-                    docker-compose up -d
+                docker-compose build
+                docker-compose up
+                #docker run --rm -d -p 8081:8081 ${DOCKERHUB_USER}/mon-frontend:latest
                 '''
+                }
             }
         }
     }
 
     post {
         success {
-            mail to: 'juloballer19@gmail.com',
-                 subject:"🚀 Déploiement réussi",
-                 body: "✅ L'application a été déployée avec succès !"
+            mail to: 'doguepauljoseph@gmail.com',
+                 subject:"deploiement reussi",
+                  body: "l'application a ete deploye avec succes"
         }
         failure {
-            mail to: 'juloballer19@gmail.com',
-                 subject:"❌ Échec du déploiement",
-                 body: "⚠️ Le pipeline a échoué. Merci de corriger les erreurs."
+            mail to: 'doguepauljoseph@gmail.com',
+                 subject:"echec du deploiement",
+                  body: "veuillez corriger vos erreurs"
         }
     }
 }
