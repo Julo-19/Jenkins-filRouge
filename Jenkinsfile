@@ -18,15 +18,14 @@ pipeline {
     steps {
         dir('Backend/odc') {
             echo "⚙️ Vérification de Python et création de l'environnement virtuel"
-            sh '''
-                which python3
-                /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 --version
-                /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 -m venv venv
-                source venv/bin/activate
-                pip install --upgrade pip
-                pip install -r requirements.txt
-                python manage.py test
-            '''
+           sh """
+    /usr/bin/python3 --version
+    /usr/bin/python3 -m venv venv
+    source venv/bin/activate
+    pip install -r requirements.txt
+    python manage.py test
+    """
+
         }
     }
 }
