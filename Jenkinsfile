@@ -2,10 +2,10 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_USER = 'utilisateur docker'
-        BACKEND_IMAGE = "${julo1997}/projetfilrouge_backend"
-        FRONTEND_IMAGE = "${julo1997}/projetfilrouge_frontend"
-        MIGRATE_IMAGE = "${julo1997}/projetfilrouge_migrate"
+        DOCKER_USER = 'julo1997' // Remplace ceci par ton nom d'utilisateur Docker Hub
+        BACKEND_IMAGE = "${DOCKER_USER}/projetfilrouge_backend"
+        FRONTEND_IMAGE = "${DOCKER_USER}/projetfilrouge_frontend"
+        MIGRATE_IMAGE = "${DOCKER_USER}/projetfilrouge_migrate"
     }
 
     stages {
@@ -15,6 +15,7 @@ pipeline {
                     url: 'https://github.com/Julo-19/Jenkins-filRouge.git'
             }
         }
+
         stage('Build des images') {
             steps {
                 sh 'docker build -t $BACKEND_IMAGE:latest ./Backend/odc'
@@ -25,7 +26,7 @@ pipeline {
 
         stage('Push des images sur Docker Hub') {
             steps {
-                withDockerRegistry([my-id: 'votre credential dockerhub', url: '']) {
+                withDockerRegistry(credentialsId: 'my-id', url: '') {
                     sh 'docker push $BACKEND_IMAGE:latest'
                     sh 'docker push $FRONTEND_IMAGE:latest'
                     sh 'docker push $MIGRATE_IMAGE:latest'
@@ -46,14 +47,14 @@ pipeline {
 
     post {
         success {
-            mail to: 'votre juloballe19r@gmail.com',
-                 subject: "reussite",
-                 body: "L'application a été déployée."
+            mail to: 'juloballe19r@gmail.com',
+                 subject: "✅ Succès",
+                 body: "L'application a été déployée avec succès !"
         }
         failure {
             mail to: 'juloballer19@gmail.com',
                  subject: "❌ Échec",
-                 body: "Une erreur s’est produite"
+                 body: "Une erreur s’est produite pendant le pipeline Jenkins."
         }
     }
 }
