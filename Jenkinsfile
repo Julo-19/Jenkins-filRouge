@@ -14,24 +14,15 @@ pipeline {
             }
         }
 
-     stage('Build & Test Backend (Django)') {
+   stage('Build & Test Backend (Django)') {
     steps {
         dir('Backend/odc') {
             echo "⚙️ Création de l'environnement virtuel et test de Django"
             sh '''
-                # Créer l'environnement virtuel
-                python3 -m venv venv
-                
-                # Activer l'environnement virtuel pour la session
+                /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 -m venv venv
                 source venv/bin/activate
-                
-                # Mettre à jour pip
                 pip install --upgrade pip
-                
-                # Installer les dépendances
                 pip install -r requirements.txt
-                
-                # Exécuter les tests Django
                 python manage.py test
             '''
         }
