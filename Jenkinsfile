@@ -27,18 +27,20 @@ pipeline {
             }
         }
 
-        stage('Push des images sur Docker Hub') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'my-id', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS')]) {
-                    sh '''
-                        echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
-                        docker push ${BACKEND_IMAGE}:latest
-                        docker push ${FRONTEND_IMAGE}:latest
-                        docker push ${MIGRATE_IMAGE}:latest
-                    '''
-                }
-            }
+      stage('Push des images sur Docker Hub') {
+    steps {
+        withCredentials([usernamePassword(credentialsId: 'my-id', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS')]) {
+            sh '''
+                export PATH=$PATH:/usr/local/bin
+                echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
+                docker push ${BACKEND_IMAGE}:latest
+                docker push ${FRONTEND_IMAGE}:latest
+                docker push ${MIGRATE_IMAGE}:latest
+            '''
         }
+    }
+}
+
 
         stage('Déploiement local avec Docker Compose') {
             steps {
