@@ -48,6 +48,7 @@ pipeline {
                     export PATH=$PATH:/usr/local/bin
                     docker-compose down || true
                     docker-compose pull
+                    docker-compose rm -f backend
                     docker-compose up -d --build
                 '''
             }
