@@ -29,9 +29,9 @@ pipeline {
 
         stage('Push des images sur Docker Hub') {
             steps {
-                withDockerRegistry([credentialsId: 'my-id', url: 'https://index.docker.io/v1/']) {
+                withCredentials([usernamePassword(credentialsId: 'my-id', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS')]) {
                     sh '''
-                        export PATH=$PATH:/usr/local/bin
+                        echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
                         docker push ${BACKEND_IMAGE}:latest
                         docker push ${FRONTEND_IMAGE}:latest
                         docker push ${MIGRATE_IMAGE}:latest
