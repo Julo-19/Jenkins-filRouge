@@ -55,14 +55,14 @@ pipeline {
         }
     }
 
-    post {
-        success {
-            mail to: 'votre.email@gmail.com',
-                 subject: "Succès du déploiement",
-                 body: "L'application a été déployée avec succès."
-        }
-        failure {
-            echo 'Le déploiement a échoué.'
-        }
-    }
+    // post {
+    //     success {
+    //         mail to: 'votre.email@gmail.com',
+    //              subject: "Succès du déploiement",
+    //              body: "L'application a été déployée avec succès."
+    //     }
+    //     failure {
+    //         echo 'Le déploiement a échoué.'
+    //     }
+    // }
 }
