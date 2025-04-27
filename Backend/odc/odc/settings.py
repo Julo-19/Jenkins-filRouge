@@ -84,7 +84,7 @@ DATABASES = {
         'NAME': 'odcdb',
         'USER': 'odc',
         'PASSWORD': 'odc123',
-        'HOST': 'awsfilrouge-db-1',
+        'HOST': 'db',
         'PORT': '5432',
     }
 }
