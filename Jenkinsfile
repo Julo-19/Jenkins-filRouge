@@ -1,46 +1,9 @@
-// pipeline {
-//     agent any
-
-//     environment {
-//         SONARQUBE_SERVER = 'Sonar-Jenkins'   // Nom de ton serveur Sonar dans Jenkins
-//         SONARQUBE_TOKEN = credentials('sonarScan')  // ID de ton credential
-//     }
-
-//     stages {
-//         stage('Checkout SCM') {
-//             steps {
-//                 checkout scm
-//             }
-//         }
-       
-//         stage('SonarQube Analysis') {
-//             steps {
-//                 withSonarQubeEnv("${SONARQUBE_SERVER}") {
-//                     script {
-//                         def scannerHome = tool 'SonarScanner' // <- Ici on charge SonarScanner installé dans Jenkins
-//                         sh """
-//                             ${scannerHome}/bin/sonar-scanner \
-//                               -Dsonar.projectKey=jenkinsSonar \
-//                               -Dsonar.sources=. \
-//                               -Dsonar.host.url=http://localhost:9000 \
-//                               -Dsonar.token="${SONARQUBE_TOKEN}"
-//                         """
-//                     }
-//                 }
-//             }
-//         }
-//     }
-// }
-
-
-
-
 pipeline {
     agent any
 
     environment {
-        SONARQUBE_SERVER = 'Sonar-Jenkins'   // Nom de ton serveur Sonar dans Jenkins
-        SONARQUBE_TOKEN = credentials('sonarScan')  // ID de ton credential
+        SONARQUBE_SERVER = 'Sonar-Jenkins'
+        SONARQUBE_TOKEN = credentials('sonarScan')
         DOCKER_USER = 'julo1997'
         BACKEND_IMAGE = "${DOCKER_USER}/projetfilrouge_backend"
         FRONTEND_IMAGE = "${DOCKER_USER}/projetfilrouge_frontend"
@@ -55,31 +18,28 @@ pipeline {
             }
         }
 
-     stages {
         stage('Checkout SCM') {
             steps {
                 checkout scm
             }
         }
-       
+
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv("${SONARQUBE_SERVER}") {
                     script {
-                        def scannerHome = tool 'SonarScanner' // <- Ici on charge SonarScanner installé dans Jenkins
+                        def scannerHome = tool 'SonarScanner'
                         sh """
                             ${scannerHome}/bin/sonar-scanner \
                               -Dsonar.projectKey=jenkinsSonar \
                               -Dsonar.sources=. \
                               -Dsonar.host.url=http://localhost:9000 \
-                              -Dsonar.token="${SONARQUBE_TOKEN}"
+                              -Dsonar.token=${SONARQUBE_TOKEN}
                         """
                     }
                 }
             }
         }
-    }
-
 
         stage('Build des images') {
             steps {
@@ -92,20 +52,19 @@ pipeline {
             }
         }
 
-      stage('Push des images sur Docker Hub') {
-    steps {
-        withCredentials([usernamePassword(credentialsId: 'my-id', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS')]) {
-            sh '''
-                export PATH=$PATH:/usr/local/bin
-                echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
-                docker push ${BACKEND_IMAGE}:latest
-                docker push ${FRONTEND_IMAGE}:latest
-                docker push ${MIGRATE_IMAGE}:latest
-            '''
+        stage('Push des images sur Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'my-id', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS')]) {
+                    sh '''
+                        export PATH=$PATH:/usr/local/bin
+                        echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
+                        docker push ${BACKEND_IMAGE}:latest
+                        docker push ${FRONTEND_IMAGE}:latest
+                        docker push ${MIGRATE_IMAGE}:latest
+                    '''
+                }
+            }
         }
-    }
-}
-
 
         stage('Déploiement local avec Docker Compose') {
             steps {
@@ -130,8 +89,4 @@ pipeline {
     //         echo 'Le déploiement a échoué.'
     //     }
     // }
-
-
-    
 }
-
