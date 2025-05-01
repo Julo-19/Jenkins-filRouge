@@ -18,7 +18,7 @@ pipeline {
 
         stage('Analyse SonarQube') {
     tools {
-        sonarQubeScanner 'Default Scanner'
+        sonarQubeScanner 'scann-odc'
     }
     steps {
         withSonarQubeEnv('SonarQube') {
