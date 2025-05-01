@@ -16,12 +16,9 @@ pipeline {
             }
         }
 
-        stage('Analyse SonarQube') {
-    tools {
-        sonarQubeScanner 'scann-odc'
-    }
+stage('Analyse SonarQube') {
     steps {
-        withSonarQubeEnv('SonarQube') {
+        withSonarQubeEnv('SonarQube') { // Le nom doit correspondre à celui défini dans Jenkins > Configure System
             sh '''
                 cd Backend/odc
                 python3 -m venv venv
@@ -35,6 +32,7 @@ pipeline {
         }
     }
 }
+
 
         stage('Build des images') {
             steps {
