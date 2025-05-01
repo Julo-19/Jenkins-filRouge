@@ -27,7 +27,7 @@ stage('Analyse SonarQube') {
                 pip install coverage
                 coverage run -m unittest discover
                 coverage xml
-                Sonar-Jenkins
+                sonar-scanner
             '''
         }
     }
