@@ -18,7 +18,7 @@ pipeline {
 
 stage('Analyse SonarQube') {
     steps {
-        withSonarQubeEnv('SonarQube') { // Le nom doit correspondre à celui défini dans Jenkins > Configure System
+        withSonarQubeEnv('Sonar-Jenkins') { // Le nom doit correspondre à celui défini dans Jenkins > Configure System
             sh '''
                 cd Backend/odc
                 python3 -m venv venv
