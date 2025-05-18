@@ -66,15 +66,15 @@ pipeline {
             }
         }
 
-        stage('Déploiement local avec Docker Compose') {
+        stage('Déploiement avec Terraform') {
             steps {
-                sh '''
-                    export PATH=$PATH:/usr/local/bin
-                    docker-compose down || true
-                    docker-compose pull
-                    docker-compose rm -f backend_app || true
-                    docker-compose up -d --build
-                '''
+                dir('Terraform') {
+                    sh '''
+                        export PATH=$PATH:/usr/local/bin
+                        terraform init
+                        terraform apply -auto-approve
+                    '''
+                }
             }
         }
     }
